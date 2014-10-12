@@ -15,7 +15,7 @@ static int shader_handle, vert_handle, frag_handle;
 static int texture_location, ortho_location;
 static int position_location, uv_location, colour_location;
 //streaming vbo
-static unsigned int vbohandle, cursor, size;
+static unsigned int vbohandle, vaohandle, cursor, size;
 
 
 template<typename T>
@@ -82,6 +82,7 @@ static void ImImpl_RenderDrawLists(ImDrawList** const cmd_lists, int cmd_lists_c
     glUniform1i(texture_location, 0);
     glUniformMatrix4fv(ortho_location, 1, GL_FALSE, ortho);
 
+    glBindVertexArray(vaohandle);
     glEnableVertexAttribArray(position_location);
     glEnableVertexAttribArray(uv_location);
     glEnableVertexAttribArray(colour_location);
@@ -246,6 +247,8 @@ void InitGL()
     position_location = glGetAttribLocation(shader_handle, "Position");
     uv_location = glGetAttribLocation(shader_handle, "UV");
     colour_location = glGetAttribLocation(shader_handle, "Colour");
+
+    glGenVertexArrays(1, &vaohandle);
 
     size = static_cast<int>(pow(2.0, 20.0)); //1Mb streaming buffer
     glGenBuffers(1, &vbohandle);
